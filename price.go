@@ -7,14 +7,7 @@ import (
     "fmt"
 )
 
-var (
-    regexp_numbers *regexp.Regexp
-)
-
-func init() {
-    regexp_numbers = regexp.MustCompile("[.0-9]+")
-}
-
+var regexp_numbers = regexp.MustCompile("[.,0-9]+")
 
 func NewPrice() (p *Price) {
     p = new(Price)
