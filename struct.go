@@ -1,11 +1,23 @@
 package pricer
 
+import (
+    "sync"
+    "math/big"
+)
+
 type Price struct {
     default_type string
 
     Price_source string
     Price string
     Price_type string
+    Price_rat  *big.Rat
+}
+
+// [source][destination]ratio
+type ConvertPriceType struct {
+    sync.RWMutex
+    d map[string]map[string]*big.Rat
 }
 
 type SearchPriceType struct {
