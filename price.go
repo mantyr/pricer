@@ -47,7 +47,7 @@ func init() {
 func (p *Price) parse_value() string {
     v := strings.Join(regexp_numbers.FindAllString(p.Price_source, -1), "")
     if len(v) == 0 {
-        return ""
+        return "0"
     }
     v  = strings.Replace(v, ",", ".", -1)
 
