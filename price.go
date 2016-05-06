@@ -46,6 +46,9 @@ func init() {
 
 func (p *Price) parse_value() string {
     v := strings.Join(regexp_numbers.FindAllString(p.Price_source, -1), "")
+    if len(v) == 0 {
+        return ""
+    }
     v  = strings.Replace(v, ",", ".", -1)
 
     c := strings.IndexRune(v, '.')
@@ -63,6 +66,9 @@ func (p *Price) parse_value() string {
 }
 
 func (p *Price) parse_type() string {
+    if len(p.Price_source) == 0 {
+        return p.default_type
+    }
     for _, price := range PriceTypes {
         if strings.Index(p.Price_source, price.Search) > -1 {
             return price.Result
