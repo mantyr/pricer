@@ -95,3 +95,36 @@ func TestPrices(t *testing.T) {
     }
 }
 
+func TestPricesModify(t *testing.T) {
+    p := NewPrice()
+    p.SetDefaultType("DEFAULT_TYPE")
+
+    SetCourseString("EUR", "RUB", "74.9")
+    SetCourseString("USD", "RUB", "65")
+    p.Parse("120€")
+    p.Plus("12")
+    if p.Get() != "132" || p.GetType() != "EUR" {
+        t.Errorf("Error Plus(), %q, %q", p.Get(), p.GetType())
+    }
+    p.PlusPercent("10")
+    if p.Get() != "145.20" || p.GetType() != "EUR" {
+        t.Errorf("Error PlusPercent(), %q, %q", p.Get(), p.GetType())
+    }
+    p.Plus("-2.15")
+    if p.Get() != "143.05" || p.GetType() != "EUR" {
+        t.Errorf("Error Minus, %q, %q", p.Get(), p.GetType())
+    }
+
+    p.PlusPercent("-10")
+    if p.Get() != "128.75" || p.GetType() != "EUR" {
+        t.Errorf("Error Minus, %q, %q", p.Get(), p.GetType())
+    }
+    p.PlusPercent("-10%")
+    if p.Get() != "115.87" || p.GetType() != "EUR" {
+        t.Errorf("Error Minus, %q, %q, %q", p.Get(), p.GetType(), p.Price_rat.FloatString(10))
+    }
+    p.Plus("-10%")
+    if p.Get() != "104.28" || p.GetType() != "EUR" {
+        t.Errorf("Error Minus, %q, %q, %q", p.Get(), p.GetType(), p.Price_rat.FloatString(10))
+    }
+}

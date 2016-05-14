@@ -82,6 +82,52 @@ func (p *Price) String() string {
     return p.Get()+" "+p.Price_type
 }
 
+// Example:
+//  p = p + plus
+func (p *Price) Add(plus *big.Rat) *Price {
+    p.Price_rat.Add(p.Price_rat, plus)
+    return p
+}
+
+// Example:
+//  p = p * multiply
+func (p *Price) Mul(multiply *big.Rat) *Price {
+    p.Price_rat.Mul(p.Price_rat, multiply)
+    return p
+}
+
+// Example:
+//  p = p + "10"
+//  p = p + "10%" => p + (p*(plus/100))
+func (p *Price) Plus(plus string) *Price {
+    if strings.ContainsAny(plus, "%") {
+        return p.PlusPercent(plus)
+    }
+
+    r := new(big.Rat)
+    r.SetString(plus)
+
+    p.Price_rat.Add(p.Price_rat, r)
+    return p
+}
+
+// Example:
+//  p = p + (p*(plus/100))
+func (p *Price) PlusPercent(plus string) *Price {
+    plus = strings.Replace(plus, `%`, ``, -1)
+
+    pl := new(big.Rat)
+    pl.SetString("100")
+
+    r := new(big.Rat)
+    r.SetString(plus)
+    r.Quo(r, pl)                     // plus/100
+    r.Mul(p.Price_rat, r)            // price*(plus/100)
+
+    p.Price_rat.Add(p.Price_rat, r)  // price + (price*(plus/100))
+    return p
+}
+
 func (p *Price) Get() string {
     price := p.Price_rat.FloatString(2)
     if price[len(price)-2:] == "00" {
